@@ -26,7 +26,6 @@
                             v-model="checkbox"
                             label="记住密码"
                             type="checkbox"
-                            readonly
                         ></v-checkbox>
 
                         <v-btn @click="submit" color="success">登录</v-btn>
@@ -41,6 +40,7 @@
   import Vue from 'vue'
   import Axios from 'axios'
   import App from '../App.vue'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     $_veeValidate: {
@@ -48,10 +48,10 @@
     },
 
     data: () => ({
-      person:{
-          name: 'huangyao',
-          password: '123456'
-      },
+      // person:{
+      //     name: 'huangyao',
+      //     password: '123456'
+      // },
       checkbox: true,
       dictionary: {
         attributes: {
@@ -67,6 +67,19 @@
         }
       }
     }),
+    watch: {
+      checkbox: function(val) {
+        if(val === false) this.clearPerson
+      }
+    },
+    computed: {
+      ...mapGetters({
+        person: 'getPerson'
+      }),
+      ...mapActions([
+        'clearPerson'
+      ])
+    },
 
 
     mounted () {
