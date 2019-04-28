@@ -41,27 +41,23 @@
   import Axios from 'axios'
   import App from '../App.vue'
   import { mapGetters, mapActions } from 'vuex'
-
+  import VueI18n from 'vue-i18n'
   export default {
     $_veeValidate: {
       validator: 'new'
     },
 
     data: () => ({
-      // person:{
-      //     name: 'huangyao',
-      //     password: '123456'
-      // },
       checkbox: true,
       dictionary: {
         attributes: {
-          email: 'E-mail Address'
+          password: '密码'
           // custom attributes
         },
         custom: {
           name: {
-            required: () => 'Name can not be empty',
-            max: 'The name field may not be greater than 10 characters'
+            required: () => '用户名不能为空',
+            max: '用户名长度不能超过10位'
             // custom messages
           }
         }
@@ -69,21 +65,21 @@
     }),
     watch: {
       checkbox: function(val) {
-        if(val === false) this.clearPerson
+        // if(val === false) this.clearPerson
       }
     },
     computed: {
       ...mapGetters({
         person: 'getPerson'
       }),
-      ...mapActions([
-        'clearPerson'
-      ])
+      // ...mapActions([
+      //   'clearPerson'
+      // ])
     },
 
 
     mounted () {
-      this.$validator.localize('en', this.dictionary)
+      this.$validator.localize('zh_CN', this.dictionary)
       if(this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.sm) {
         document.getElementById('myflex').style.height = '100%'
       }
@@ -92,28 +88,30 @@
     methods: {
       submit () {
         let _this = this;
-        this.$validator.validateAll().then(() => {
-            this.$loading({
-                showload: true
-            })
-            Axios.post('/login', _this.person).then( response => {
-                this.$loading({
-                    showload: false
-                })
-                if(response.status === 200) {
-                  sessionStorage.setItem('token', 'hy')
-                  if(this.$route.query.redirect){
-                      let redirect = this.$route.query.redirect;
-                      this.$router.push(redirect);
-                  }else{
-                      this.$router.push('/page');
-                  }
-                } else if(response.status === 201) {
-                  this.$message({
-                      text: response.data.msg
+        this.$validator.validateAll().then((status) => {
+            if(status === true) {
+              this.$loading({
+                  showload: true
+              })
+              Axios.post('/login', _this.person).then( response => {
+                  this.$loading({
+                      showload: false
                   })
-                }
-            })
+                  if(response.status === 200) {
+                    sessionStorage.setItem('token', 'hy')
+                    if(this.$route.query.redirect){
+                        let redirect = this.$route.query.redirect;
+                        this.$router.push(redirect);
+                    }else{
+                        this.$router.push('/page');
+                    }
+                  } else if(response.status === 201) {
+                    this.$message({
+                        text: response.data.msg
+                    })
+                  }
+              })
+            }
         })
       },
       clear () {
