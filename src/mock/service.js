@@ -11,7 +11,7 @@ export default {
         })
         mock.onPost('/login').reply(config => {
             return new Promise((resolve, reject) => {
-                if (JSON.parse(config.data).name === 'huangyao' && JSON.parse(config.data).password === '123456') {
+                if (JSON.parse(config.data).name === 'huangyao' && JSON.parse(config.data).password === 'e10adc3949ba59abbe56e057f20f883e') {
                     setTimeout(() => {
                         resolve([200, { msg: '登录成功' }])
                     }, 2000)

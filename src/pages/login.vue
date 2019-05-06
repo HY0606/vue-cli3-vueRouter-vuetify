@@ -7,7 +7,6 @@
                         <v-text-field
                             v-model="person.name"
                             v-validate="'required|max:10'"
-                            :counter="10"
                             :error-messages="errors.collect('name')"
                             label="用户名"
                             data-vv-name="name"
@@ -42,6 +41,7 @@
   import App from '../App.vue'
   import { mapGetters, mapActions } from 'vuex'
   import VueI18n from 'vue-i18n'
+  import md5 from 'MD5'
   export default {
     $_veeValidate: {
       validator: 'new'
@@ -83,9 +83,13 @@
       if(this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.sm) {
         document.getElementById('myflex').style.height = '100%'
       }
+      console.log('mounted')
+      console.log(this.$listeners)
+      console.log(this.person)
     },
 
     methods: {
+      // 登录
       submit () {
         let _this = this;
         this.$validator.validateAll().then((status) => {
@@ -93,7 +97,9 @@
               this.$loading({
                   showload: true
               })
-              Axios.post('/login', _this.person).then( response => {
+              let person_c = {..._this.person}
+              person_c.password = md5(person_c.password)
+              Axios.post('/login', person_c).then( response => {
                   this.$loading({
                       showload: false
                   })
